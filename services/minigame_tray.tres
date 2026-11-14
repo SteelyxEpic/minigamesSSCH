@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="TrayDefinition" format=3 uid="uid://ddp2qvd30p4c4"]
+
+[ext_resource type="Script" uid="uid://b5igjolyouukd" path="res://addons/afaz-tools-ui-system/core/tray_definition.gd" id="1_tray"]
+[ext_resource type="Script" uid="uid://dq5rbpift1iwn" path="res://addons/afaz-tools-ui-system/core/tool_definition.gd" id="2_tool"]
+[ext_resource type="PackedScene" uid="uid://dkpy740tuj4vt" path="res://minigame.tscn" id="3_rhythm"]
+[ext_resource type="PackedScene" uid="uid://cwa1n876brbgt" path="res://minigame_2.tscn" id="4_knobs"]
+[ext_resource type="PackedScene" path="res://minigame_3.tscn" id="5_dust"]
+[ext_resource type="PackedScene" path="res://minigame_4.tscn" id="6_geiger"]
+
+[sub_resource type="Resource" id="Resource_rhythm"]
+script = ExtResource("2_tool")
+display_name = "Rhythm"
+description = "Click on the right beat."
+scene = ExtResource("3_rhythm")
+keywords = Array[String](["beat", "timing", "click"])
+
+[sub_resource type="Resource" id="Resource_knobs"]
+script = ExtResource("2_tool")
+display_name = "Knobs"
+description = "Click and drag to spin the knobs."
+scene = ExtResource("4_knobs")
+keywords = Array[String](["knob", "spin", "drag"])
+
+[sub_resource type="Resource" id="Resource_dust"]
+script = ExtResource("2_tool")
+display_name = "Dust Collector"
+description = "Find the belt and stick the lunar dust."
+scene = ExtResource("5_dust")
+keywords = Array[String](["dust", "lunar", "belt", "plate"])
+
+[sub_resource type="Resource" id="Resource_geiger"]
+script = ExtResource("2_tool")
+display_name = "Geiger"
+description = "Find the strongest radiation. Fast = more."
+scene = ExtResource("6_geiger")
+keywords = Array[String](["geiger", "radiation", "counter"])
+
+[resource]
+script = ExtResource("1_tray")
+display_name = "Minigames"
+description = "Pick a minigame"
+tools = Array[ExtResource("2_tool")]([SubResource("Resource_rhythm"), SubResource("Resource_knobs"), SubResource("Resource_dust"), SubResource("Resource_geiger")])

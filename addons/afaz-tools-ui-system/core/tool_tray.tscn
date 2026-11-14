@@ -1,0 +1,166 @@
+[gd_scene format=3 uid="uid://ceaobctdkvbnl"]
+
+[ext_resource type="Theme" uid="uid://12l6epbqa4pq" path="res://addons/afaz-tools-ui-system/themes/classic/tool_window.tres" id="1_rui47"]
+[ext_resource type="Script" uid="uid://c2n0p68v68x4k" path="res://addons/afaz-tools-ui-system/core/tool_tray.gd" id="2_8axvv"]
+[ext_resource type="Shader" uid="uid://lq1vaa0fpaa5" path="res://addons/afaz-tools-ui-system/shaders/blurbg.gdshader" id="3_rui47"]
+[ext_resource type="Theme" uid="uid://cllpa2cdbqvom" path="res://addons/afaz-tools-ui-system/themes/classic/tool_head.tres" id="4_i5dys"]
+[ext_resource type="Theme" uid="uid://ciib5dfln75u8" path="res://addons/afaz-tools-ui-system/themes/classic/tray_head.tres" id="7_oauop"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pggmo"]
+shader = ExtResource("3_rui47")
+shader_parameter/blur_lod = 3.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_07nf8"]
+shader = ExtResource("3_rui47")
+shader_parameter/blur_lod = 3.5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5tlur"]
+bg_color = Color(0.6, 0.6, 0.6, 0.09803922)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="UToolTray" type="Control" unique_id=1848530629]
+layout_mode = 3
+anchor_top = -0.36959878
+anchor_right = 0.16666667
+grow_vertical = 2
+theme = ExtResource("1_rui47")
+script = ExtResource("2_8axvv")
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="Panel" parent="." unique_id=1200708792]
+material = SubResource("ShaderMaterial_pggmo")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="." unique_id=223081822]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="Desc" type="Label" parent="Content" unique_id=1030665229]
+layout_mode = 2
+theme = ExtResource("4_i5dys")
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Content" unique_id=1101903336]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="Body" type="ScrollContainer" parent="Content" unique_id=1494263905]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ContentRoot" type="MarginContainer" parent="Content/Body" unique_id=974426561]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="GridContainer" type="GridContainer" parent="Content/Body/ContentRoot" unique_id=687227440]
+layout_mode = 2
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
+columns = 2
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Spacer2" type="Control" parent="Content" unique_id=844965968]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Head" type="Control" parent="." unique_id=1735768016]
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 1.0000877
+anchor_right = 0.5
+anchor_bottom = 1.0000877
+offset_left = -96.0
+offset_top = -0.111206055
+offset_right = 96.0
+offset_bottom = 26.618713
+metadata/_edit_use_anchors_ = true
+
+[node name="Bg" type="HBoxContainer" parent="Head" unique_id=1425414736]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Deco" type="Panel" parent="Head/Bg" unique_id=1864512426]
+material = SubResource("ShaderMaterial_07nf8")
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5tlur")
+
+[node name="Title" type="HBoxContainer" parent="Head" unique_id=1407263148]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("7_oauop")
+theme_override_constants/separation = 0
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="TrayButton" type="Button" parent="Head/Title" unique_id=857360396]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Empty Tool Tray"
+text_overrun_behavior = 6
+
+[node name="Foot" type="HBoxContainer" parent="." unique_id=1157416432]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.94572026
+anchor_right = 1.0
+anchor_bottom = 0.9979123
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 0
+alignment = 2
+metadata/_smooth_scroll_default_mouse_filter_set = true
+metadata/_edit_use_anchors_ = true
+
+[node name="Button2" type="Button" parent="Foot" unique_id=1026752478]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+disabled = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="SearchBar" type="LineEdit" parent="Foot" unique_id=458319656]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+placeholder_text = "Filter Tools"
+clear_button_enabled = true
+
+[node name="Button" type="Button" parent="Foot" unique_id=1360241228]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+disabled = true
+icon_alignment = 1
+expand_icon = true

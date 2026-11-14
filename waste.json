@@ -1,0 +1,67 @@
+{
+  "Imaging and Cartography": {
+	"High-resolution optical camera": 25,
+	"Wide-angle camera": 15,
+	"Multispectral imager": 30,
+	"Hyperspectral imaging spectrometer": 45,
+	"Thermal infrared imager": 35,
+	"Ultraviolet spectrometer": 25,
+	"Near-infrared spectrometer": 35,
+	"Stereo imaging system": 30
+  },
+  "Elevation and Radar Mapping": {
+	"Laser altimeter (LiDAR)": 30,
+	"Radar altimeter": 18,
+	"Synthetic aperture radar (SAR)": 100,
+	"Radar sounder": 50,
+	"Ground-penetrating radar": 50,
+	"Laser rangefinder": 15
+  },
+  "Atmospheric Science": {
+	"Atmospheric mass spectrometer": 35,
+	"Neutral particle analyzer": 25,
+	"Ion mass spectrometer": 30,
+	"Ultraviolet occultation spectrometer": 20,
+	"Infrared atmospheric spectrometer": 35,
+	"Pressure sensor / barometer": 2,
+	"Atmospheric temperature sensor": 1,
+	"Anemometer": 5
+  },
+  "Magnetic Field and Plasma": {
+	"Fluxgate magnetometer": 5,
+	"Magnetometer boom": 2,
+	"Search-coil magnetometer": 8,
+	"Plasma analyzer": 25,
+	"Ion detector": 20,
+	"Electron detector": 15,
+	"Plasma wave analyzer": 20,
+	"Langmuir probe": 5
+  },
+  "Radiation and Particle Science": {
+	"Gamma-ray spectrometer": 10,
+	"X-ray spectrometer": 15,
+	"Neutron spectrometer": 10,
+	"Cosmic-ray detector": 15,
+	"Radiation dosimeter": 2,
+	"Energetic particle detector": 20,
+	"Scintillator detector": 35,
+	"Cherenkov detector": 50
+  },
+  "Dust and Solar Science": {
+	"Dust analyzer": 15,
+	"Dust impact detector": 5,
+	"Solar wind analyzer": 20,
+	"Solar flux monitor": 3
+  },
+  "Radio Science and Navigation": {
+	"Radio science electronics": 5,
+	"Occultation radio experiment": 5,
+	"Accelerometer": 2
+  },
+  "Spacecraft Electrical Generation Capacity": {
+	"Small flyby probe": 80,
+	"Small planetary orbiter": 150,
+	"Medium planetary orbiter": 300,
+	"Large scientific orbiter": 600
+  }
+}

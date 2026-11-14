@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="BundleDefinition" format=3]
+
+[ext_resource type="Script" path="res://addons/afaz-services-system/core/bundle_definition.gd" id="1_bundle"]
+[ext_resource type="Script" path="res://addons/afaz-services-system/core/service_definition.gd" id="2_def"]
+[ext_resource type="PackedScene" path="res://services/resources_service.tscn" id="3_scene"]
+[ext_resource type="PackedScene" path="res://services/clock_service.tscn" id="4_clock"]
+
+[sub_resource type="Resource" id="Resource_service"]
+script = ExtResource("2_def")
+identity_name = "ResourcesService"
+description = "Oxygen, food and water levels."
+scene = ExtResource("3_scene")
+keywords = Array[String](["oxygen", "food", "water", "resources"])
+
+[sub_resource type="Resource" id="Resource_clock"]
+script = ExtResource("2_def")
+identity_name = "ClockService"
+description = "In-game clock. 1 hour = 2 real minutes."
+scene = ExtResource("4_clock")
+keywords = Array[String](["clock", "time"])
+
+[resource]
+script = ExtResource("1_bundle")
+identity_name = "Resources"
+description = "Colony resource services."
+services = Array[ExtResource("2_def")]([SubResource("Resource_service"), SubResource("Resource_clock")])

@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://dkpy740tuj4vt"]
+
+[ext_resource type="Script" uid="uid://de5urx2piwi1w" path="res://minigame.gd" id="1_4bqly"]
+[ext_resource type="Texture2D" uid="uid://bgxulh2wf80k3" path="res://lidar.asprite.png" id="2_k7ghj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lidar"]
+atlas = ExtResource("2_k7ghj")
+region = Rect2(0, 0, 24, 24)
+
+[node name="minigame1" type="Control" unique_id=531843035]
+custom_minimum_size = Vector2(980, 540)
+clip_contents = true
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_4bqly")
+
+[node name="Stage" type="Control" parent="." unique_id=1034202737]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -490.0
+offset_top = -270.0
+offset_right = 490.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Stage" unique_id=695191586]
+layout_mode = 0
+offset_left = 245.0
+offset_top = 484.0
+offset_right = 735.0
+offset_bottom = 554.0
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 44
+bbcode_enabled = true
+text = "[center]Hit on the - beat[/center]"
+scroll_active = false
+
+[node name="TimingBar" type="ProgressBar" parent="Stage" unique_id=2031033132]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 90.0
+offset_top = 30.0
+offset_right = 890.0
+offset_bottom = 66.0
+mouse_filter = 2
+max_value = 1.0
+step = 0.001
+show_percentage = false
+
+[node name="Zones" type="Control" parent="Stage/TimingBar" unique_id=1144449525]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="Stage" unique_id=1462902724]
+texture_filter = 1
+layout_mode = 0
+offset_left = 253.0
+offset_top = 53.0
+offset_right = 706.0
+offset_bottom = 494.0
+mouse_filter = 2
+texture = SubResource("AtlasTexture_lidar")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FeedbackLabel" type="RichTextLabel" parent="Stage" unique_id=84148497]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 594.0
+offset_top = 80.0
+offset_right = 934.0
+offset_bottom = 190.0
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 48
+theme_override_font_sizes/bold_font_size = 48
+bbcode_enabled = true
+scroll_active = false
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1533729902]
+volume_db = 10.0

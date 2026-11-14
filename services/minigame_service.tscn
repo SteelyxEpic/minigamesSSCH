@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://services/minigame_service.gd" id="1_svc"]
+[ext_resource type="PackedScene" uid="uid://ceaobctdkvbnl" path="res://addons/afaz-tools-ui-system/core/tool_tray.tscn" id="2_tray"]
+[ext_resource type="PackedScene" uid="uid://bxi8ms36g8k17" path="res://addons/afaz-tools-ui-system/core/tool_window.tscn" id="3_window"]
+[ext_resource type="Resource" path="res://services/minigame_tray.tres" id="4_data"]
+
+[node name="MinigameService" type="Node" node_paths=PackedStringArray("tray", "window_layer")]
+script = ExtResource("1_svc")
+tray = NodePath("UI/ToolTray")
+window_layer = NodePath("UI/Windows")
+startup_minigame = "Rhythm"
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Windows" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ToolTray" parent="UI" node_paths=PackedStringArray("spawn_parent") instance=ExtResource("2_tray")]
+tools_data = ExtResource("4_data")
+window_scene = ExtResource("3_window")
+spawn_parent = NodePath("../Windows")

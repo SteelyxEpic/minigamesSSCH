@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="BundleDefinition" format=3 uid="uid://bfnon48s4m0lk"]
+
+[ext_resource type="Script" uid="uid://bd16kpbule7iy" path="res://addons/afaz-services-system/core/bundle_definition.gd" id="1_bundle"]
+[ext_resource type="Script" uid="uid://bgppd2o6krw5l" path="res://addons/afaz-services-system/core/service_definition.gd" id="2_def"]
+[ext_resource type="PackedScene" path="res://services/minigame_service.tscn" id="3_scene"]
+
+[sub_resource type="Resource" id="Resource_service"]
+script = ExtResource("2_def")
+identity_name = "MinigameService"
+description = "Hosts every minigame as a tool in a tool tray."
+scene = ExtResource("3_scene")
+keywords = Array[String](["minigame", "tools"])
+
+[resource]
+script = ExtResource("1_bundle")
+identity_name = "Minigames"
+description = "All minigame services."
+services = Array[ExtResource("2_def")]([SubResource("Resource_service")])

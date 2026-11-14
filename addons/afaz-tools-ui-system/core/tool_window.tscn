@@ -1,0 +1,114 @@
+[gd_scene format=3 uid="uid://bxi8ms36g8k17"]
+
+[ext_resource type="Theme" uid="uid://12l6epbqa4pq" path="res://addons/afaz-tools-ui-system/themes/classic/tool_window.tres" id="1_komqp"]
+[ext_resource type="Script" uid="uid://xtwnkrq4h7qv" path="res://addons/afaz-tools-ui-system/core/tool_window.gd" id="2_qbg2q"]
+[ext_resource type="Shader" uid="uid://lq1vaa0fpaa5" path="res://addons/afaz-tools-ui-system/shaders/blurbg.gdshader" id="3_1odmt"]
+[ext_resource type="Theme" uid="uid://cllpa2cdbqvom" path="res://addons/afaz-tools-ui-system/themes/classic/tool_head.tres" id="4_1odmt"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sfqgf"]
+shader = ExtResource("3_1odmt")
+shader_parameter/blur_lod = 3.5
+
+[node name="ToolWindow" type="Control" unique_id=1848530629]
+custom_minimum_size = Vector2(200, 150)
+layout_mode = 3
+anchor_right = 0.11111111
+anchor_bottom = 0.24691358
+grow_vertical = 2
+theme = ExtResource("1_komqp")
+script = ExtResource("2_qbg2q")
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="Panel" parent="." unique_id=592859695]
+material = SubResource("ShaderMaterial_sfqgf")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="." unique_id=933570377]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Head" type="HBoxContainer" parent="Content" unique_id=1568451123]
+layout_mode = 2
+theme = ExtResource("4_1odmt")
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="Content/Head" unique_id=1838207063]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Empty Tool"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 1
+resize_font_to_fit = true
+maximum_font_size = 14
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Content/Head/Title" unique_id=2008753485]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 2
+
+[node name="VisiButton" type="CheckButton" parent="Content/Head/Title/HBoxContainer" unique_id=1456692109]
+layout_mode = 2
+button_pressed = true
+metadata/_edit_use_anchors_ = true
+
+[node name="Control" type="Control" parent="Content/Head/Title/HBoxContainer" unique_id=1848035937]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Content" unique_id=229521787]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="Body" type="ScrollContainer" parent="Content" unique_id=2146226201]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ContentRoot" type="MarginContainer" parent="Content/Body" unique_id=2019612530]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Spacer2" type="Control" parent="Content" unique_id=294491819]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Foot" type="HBoxContainer" parent="." unique_id=1255363395]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("4_1odmt")
+theme_override_constants/separation = 0
+alignment = 2
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Button" type="Button" parent="Foot" unique_id=448844947]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+icon_alignment = 1
+expand_icon = true
