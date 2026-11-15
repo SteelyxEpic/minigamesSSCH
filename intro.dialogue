@@ -1,0 +1,91 @@
+~ intro
+Mooner: Woah Woah! Calm down!
+Mooner: How are you feeling, you hit your head pretty hard there
+Mooner: Huh you don’t remember anything!?!?!
+Mooner: Do you at least remember your name?
+do ask_name()
+You: {{player_name}}
+Mooner: …
+Mooner: Ok at least some of your memories aren’t damaged
+Mooner: …
+Mooner: Uhhh I guess I have to reintroduce myself
+Mooner: I’m Walpurgisnacht but you can call me Mooner
+Mooner: I’m from the moon and we were traveling back to my home to do some research
+Mooner: …
+Mooner: Well maybe for some repairs too
+Mooner: Your antenna is broken!
+Mooner: Well you still remember how to slingshot right?
+- No (tutorial)
+	Mooner: Oh no....
+	Mooner: Well It’s alright there’s a book here somewhere
+	Mooner: …
+	Mooner: …
+	Mooner: Here it is!
+	Mooner: …
+	Mooner: You can’t read it?
+	Mooner: Lemme read it for you
+	Mooner: “To prepare for slingshot, you must prepare an accurate delta-v”
+	Mooner: Oh Delta-V! You remember that don’t you?
+	Mooner: Oh…You don’t…
+	Mooner: Well Delta-V is like the change in speed the spacecraft should get
+	Mooner: From how much fuel is used you know…
+	Mooner: Seems easy enough
+	Mooner: Go ahead, try it out!
+	Mooner: I don’t have the hands to help you here
+	Mooner: You can ask me again if you need to!
+	do tutorial_delta_v()
+	Mooner: Hey! Memory or not, you still got it!
+	Mooner: I think…?
+	Mooner: Now then before we launch we need to get the research in.
+	Mooner: It’s in the paper somewhere
+	Mooner: “Next is your research panel,
+	Mooner: Your rocket does not supply enough power for all research equipment.
+	Mooner: Therefore before slingshot you must choose machines you wish to power for your research”
+	Mooner: …
+	Mooner: Seems pretty easy!
+	Mooner: You got that right?
+	Mooner: You can ask me again if you need to!
+	do tutorial_research()
+	Mooner: Choosing the same choices as before…
+	Mooner: I guess your preferences are the same!
+	Mooner: Then come on!
+	Mooner: Let’s blast off!
+	=> blast_off
+- Yes (reach for the stars)
+	Mooner: Alright, then show me what you’ve got!
+	do open_planner()
+	Mooner: Set up the rocket however you like.
+	Mooner: Then come on! Let’s blast off!
+	=> blast_off
+
+~ blast_off
+do wait_for_launch()
+=> landing
+
+~ landing
+Mooner: I’ll go ask for some moonians to fix the antenna!
+Mooner: You can try to learn the machines and do some of the research!
+Mooner: There should be drawings on how to use each machine!
+Mooner: I’ll be back once you’ve finished all the research!
+Mooner: Make sure you have plenty of food, water and oxygen!
+Mooner: I’ll be back!
+do mooner_leave()
+=> END
+
+~ return_home
+Mooner: I’m back!
+Mooner: It seems that you finished!
+Mooner: Nice one!
+Mooner: Let’s go back to Earth!
+do unlock_return()
+=> END
+
+~ hint_delta_v
+Mooner: Delta-V is like the change in speed the spacecraft should get, from how much fuel is used.
+Mooner: Try raising it until it is enough to reach the Moon!
+=> END
+
+~ hint_research
+Mooner: The paper says your rocket does not supply enough power for all the research equipment.
+Mooner: So choose the machines you want to power, and keep the payload under your power!
+=> END

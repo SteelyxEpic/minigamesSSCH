@@ -57,6 +57,7 @@ var _params: Dictionary = {}
 
 @onready var return_button: Button = $UI/ReturnButton
 @onready var funds_label: Label = $UI/FundsLabel
+@onready var status_label: Label = $UI/StatusLabel
 @onready var report: PanelContainer = $UI/Report
 @onready var rows: GridContainer = $UI/Report/Margin/Box/Rows
 @onready var new_mission_button: Button = $UI/Report/Margin/Box/NewMissionButton
@@ -86,6 +87,19 @@ func go_to_planning() -> void:
 	return_button.visible = false
 	report.visible = false
 	death_screen.visible = false
+	set_status("")
+
+
+## Locks or unlocks the RETURN button (it is locked while Mooner is away on the Moon).
+func set_return_locked(locked: bool) -> void:
+	return_button.disabled = locked
+	return_button.tooltip_text = "Wait for Mooner to return" if locked else ""
+
+
+## A line of text above the RETURN button, e.g. when Mooner is due back. Empty hides it.
+func set_status(text: String) -> void:
+	status_label.text = text
+	status_label.visible = not text.is_empty()
 
 
 ## RETURN is disabled right away so the leave sound can't be triggered twice.

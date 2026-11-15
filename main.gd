@@ -22,18 +22,42 @@ const MUSIC_VOLUME_DB := -8.0
 var _busy := false
 var _music: AudioStreamPlayer
 var _music_wanted := false
+var _director: IntroDirector
+
+## Play the opening story (intro.dialogue) when the game starts. Turn off to go straight to planning.
+@export var play_intro := true
 
 
 func _ready() -> void:
+	# The director covers the screen first, so create it before anything else is shown.
+	_director = IntroDirector.new()
+	_director.main = self
+	add_child(_director)
+
 	super._ready()
 	# The music file is large, so start loading it now. It is ready by the time of the first launch.
 	if ResourceLoader.exists(MUSIC_PATH):
 		ResourceLoader.load_threaded_request(MUSIC_PATH)
-	_begin_planning()
+
+	if play_intro:
+		_start_intro()
+	else:
+		begin_planning()
+
+
+## The opening story: no tools yet, then Mooner talks to the player.
+func _start_intro() -> void:
+	var mission := get_service("MissionService") as MissionService
+	if mission:
+		mission.go_to_planning()
+	var minigames := get_service("MinigameService") as MinigameService
+	if minigames:
+		minigames.set_available_tools([])
+	_director.run_intro()
 
 
 ## Only the Mission Planner is available. Nothing is depleting yet.
-func _begin_planning() -> void:
+func begin_planning() -> void:
 	var mission := get_service("MissionService") as MissionService
 	if mission:
 		mission.go_to_planning()
@@ -53,6 +77,9 @@ func _on_minigameservice_tool_launch_requested(params: Dictionary) -> void:
 		return
 	_busy = true
 	await _play_sound(LAUNCH_SOUND)
+	var story := _director.story_active
+	if story:
+		await _director.cards_begin()  # the title card; the mission begins behind it
 
 	var mission := get_service("MissionService") as MissionService
 	var minigames := get_service("MinigameService") as MinigameService
@@ -74,6 +101,10 @@ func _on_minigameservice_tool_launch_requested(params: Dictionary) -> void:
 		minigames.set_available_tools([TOOL_CONTROL])
 		minigames.open_minigame(TOOL_CONTROL)
 	_start_music()
+	if story:
+		_director.on_mission_launched(params)
+		await _director.cards_end()
+		_director.notify_launched()  # the conversation continues: Mooner heads off
 	_busy = false
 
 
@@ -113,6 +144,7 @@ func _on_resourcesservice_depleted(resource_name: String) -> void:
 
 ## Shared by RETURN and death: close the tools and reset everything the mission used.
 func _end_mission(minigames: MinigameService, resources: ResourcesService, clock: ClockService, data: MissionDataService) -> void:
+	_director.end_story()
 	_stop_music()
 	if minigames:
 		minigames.set_available_tools([])
@@ -126,12 +158,12 @@ func _end_mission(minigames: MinigameService, resources: ResourcesService, clock
 
 
 func _on_missionservice_new_mission_requested() -> void:
-	_begin_planning()
+	begin_planning()
 
 
 ## RETRY on the death screen: back to the beginning, planning a new run.
 func _on_missionservice_retry_requested() -> void:
-	_begin_planning()
+	begin_planning()
 
 
 ## Minigames started or stopped playing.

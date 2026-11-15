@@ -151,3 +151,15 @@ func _is_playing(window: Control) -> bool:
 		return false
 	var playing: Variant = content_root.get_child(0).get("playing")
 	return playing == null or bool(playing)
+
+
+## The scene inside the open window of the tool with this display name (e.g. the Mission
+## Planner), or null if that tool isn't open yet.
+func get_tool_content(display_name: String) -> Node:
+	for window in window_layer.get_children():
+		var tool_data: Variant = window.get("tool_data")
+		if tool_data != null and tool_data.display_name == display_name:
+			var content_root := window.get_node_or_null("Content/Body/ContentRoot")
+			if content_root and content_root.get_child_count() > 0:
+				return content_root.get_child(0)
+	return null

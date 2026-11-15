@@ -22,18 +22,22 @@ const MINIGAMES := {
 	"Elevation and Radar Mapping": {
 		"scene": preload("res://minigame.tscn"),
 		"controls": "LIDAR scans",
+		"data": "lidar",
 	},
 	"Radiation and Particle Science": {
 		"scene": preload("res://minigame_4.tscn"),
 		"controls": "Radiation readings",
+		"data": "radiation",
 	},
 	"Dust and Solar Science": {
 		"scene": preload("res://minigame_3.tscn"),
 		"controls": "Dust samples",
+		"data": "dust",
 	},
 	"Imaging and Cartography": {
 		"scene": preload("res://minigame_2.tscn"),
 		"controls": "Minerals",
+		"data": "minerals",
 	},
 }
 const HEADER_COLOR := Color("ffd84a")

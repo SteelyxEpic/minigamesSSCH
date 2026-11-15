@@ -1,51 +1,11 @@
 [gd_scene format=3]
 
-[ext_resource type="Texture2D" path="res://mooner-idle.png" id="1_tex"]
-
-[sub_resource type="AtlasTexture" id="Frame_0"]
-atlas = ExtResource("1_tex")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="Frame_1"]
-atlas = ExtResource("1_tex")
-region = Rect2(32, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="Frame_2"]
-atlas = ExtResource("1_tex")
-region = Rect2(64, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="Frame_3"]
-atlas = ExtResource("1_tex")
-region = Rect2(96, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="Frame_4"]
-atlas = ExtResource("1_tex")
-region = Rect2(128, 0, 32, 32)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_idle"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Frame_0")
-}, {
-"duration": 1.0,
-"texture": SubResource("Frame_1")
-}, {
-"duration": 1.0,
-"texture": SubResource("Frame_2")
-}, {
-"duration": 1.0,
-"texture": SubResource("Frame_3")
-}, {
-"duration": 1.0,
-"texture": SubResource("Frame_4")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 5.0
-}]
+[ext_resource type="SpriteFrames" path="res://mooner_frames.tres" id="1_frames"]
+[ext_resource type="Texture2D" path="res://textbox-001.png" id="2_textbox"]
+[ext_resource type="Script" path="res://services/mooner_service.gd" id="3_script"]
 
 [node name="MoonerService" type="Node"]
+script = ExtResource("3_script")
 
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 10
@@ -68,6 +28,24 @@ mouse_filter = 2
 [node name="Mooner" type="AnimatedSprite2D" parent="UI/Anchor"]
 texture_filter = 1
 scale = Vector2(4, 4)
-sprite_frames = SubResource("SpriteFrames_idle")
+sprite_frames = ExtResource("1_frames")
 animation = &"idle"
 autoplay = "idle"
+
+[node name="HitArea" type="Control" parent="UI/Anchor"]
+layout_mode = 0
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+mouse_default_cursor_shape = 2
+
+[node name="Tooltip" type="TextureRect" parent="UI"]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_right = 24.0
+offset_bottom = 24.0
+scale = Vector2(2, 2)
+mouse_filter = 2
+texture = ExtResource("2_textbox")

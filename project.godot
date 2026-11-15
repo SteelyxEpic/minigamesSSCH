@@ -20,6 +20,10 @@ config/icon="res://icon.svg"
 DialogueManager="*uid://c3rodes2l3gxb"
 AudioSettings="*res://audio_settings.gd"
 
+[dialogue_manager]
+
+runtime/balloon_path="res://dialogue_balloon.tscn"
+
 [display]
 
 window/stretch/mode="canvas_items"
@@ -32,6 +36,10 @@ enabled=PackedStringArray("res://addons/afaz-services-system/plugin.cfg", "res:/
 [gui]
 
 theme/custom_font="res://PixelifySans-VariableFont_wght.ttf"
+
+[internationalization]
+
+locale/translations_pot_files=PackedStringArray("res://intro.dialogue", "res://mooner.dialogue")
 
 [physics]
 

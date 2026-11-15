@@ -14,8 +14,6 @@ signal launch_requested(params: Dictionary)
 
 const MissionControlScript := preload("res://mission_control.gd")
 
-## waste.json categories that are not instruments.
-const NOT_INSTRUMENTS := ["Spacecraft Electrical Generation Capacity"]
 ## button.png: two 24x24 frames, not pressed then pressed.
 const BUTTON_SHEET := preload("res://button.png")
 const HEADER_COLOR := Color("ffd84a")
@@ -259,7 +257,9 @@ func _add_gauge_row(parent: Control, label_text: String) -> HSlider:
 ## One panel per waste.json category, with a checkbox and a wattage for every instrument.
 func _build_apparatus(grid: GridContainer, waste: Dictionary) -> void:
 	for category: String in waste:
-		if category in NOT_INSTRUMENTS:
+		# Only categories with an experiment are listed for now (this also skips the
+		# spacecraft power options). More will appear as their experiments are added.
+		if not MissionControlScript.MINIGAMES.has(category):
 			continue
 		var instruments: Dictionary = waste[category]
 
@@ -281,9 +281,7 @@ func _build_apparatus(grid: GridContainer, waste: Dictionary) -> void:
 		column.add_child(title)
 
 		var note := Label.new()
-		var runs_experiment: bool = MissionControlScript.MINIGAMES.has(category)
-		note.text = "Runs: %s" % MissionControlScript.MINIGAMES[category].controls if runs_experiment \
-				else "No experiment yet"
+		note.text = "Runs: %s" % MissionControlScript.MINIGAMES[category].controls
 		note.add_theme_font_size_override("font_size", 11)
 		note.add_theme_color_override("font_color", MUTED_COLOR)
 		column.add_child(note)
@@ -497,5 +495,40 @@ func _on_launch_pressed() -> void:
 		"food": _food_slider.value,
 		"water": _water_slider.value,
 		"apparatus": _brought(),
+		"research": _research_ids(),
 		"cost": int(_costs()["total"]),
 	})
+
+
+# --- Used by the opening tutorial (IntroDirector) ---
+
+func set_delta_v(value: float) -> void:
+	_dv_slider.value = value
+
+
+## True if the delta-V is enough to reach the Moon without being wasteful.
+func is_delta_v_valid() -> bool:
+	var delta_v := _dv_slider.value
+	return delta_v >= min_delta_v and delta_v <= max_needed_delta_v
+
+
+## Un-ticks every instrument.
+func clear_apparatus() -> void:
+	for check in _checks:
+		check.button_pressed = false
+
+
+## True if at least one experiment is packed and the payload fits in the power budget.
+func is_payload_valid() -> bool:
+	return _has_experiment() and _payload() <= _power_slider.value
+
+
+## The kinds of data the packed instruments can produce (matches MissionDataService ids).
+func _research_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for check in _checks:
+		if check.button_pressed:
+			var data_id: String = MissionControlScript.MINIGAMES[check.get_meta("category")].data
+			if not ids.has(data_id):
+				ids.append(data_id)
+	return ids
