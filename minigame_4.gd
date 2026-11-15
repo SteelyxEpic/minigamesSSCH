@@ -121,7 +121,7 @@ func _on_stop_pressed() -> void:
 		solved.emit()
 	else:
 		failed.emit()
-	await get_tree().create_timer(result_delay).timeout
+	await get_tree().create_timer(result_delay, false).timeout
 	if not is_inside_tree():
 		return
 	if success:
@@ -135,7 +135,7 @@ func _on_stop_pressed() -> void:
 func _draw() -> void:
 	# Laid out in the centered stage's coordinates.
 	draw_set_transform($Stage.position)
-	var font := ThemeDB.fallback_font
+	var font := get_theme_default_font()
 	var panel := Rect2(40.0, 70.0, 900.0, 160.0)
 	draw_rect(panel, Color(0.1, 0.11, 0.14))
 	draw_rect(panel, Color(0.45, 0.47, 0.55), false, 2.0)

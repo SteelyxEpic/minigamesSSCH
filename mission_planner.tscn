@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://mission_planner.gd" id="1_mp"]
+
+[node name="MissionPlanner" type="Control"]
+custom_minimum_size = Vector2(940, 510)
+clip_contents = true
+script = ExtResource("1_mp")

@@ -59,6 +59,18 @@ func get_count(category: String) -> int:
 	return _counts.get(category, 0)
 
 
+## A copy of every counter, as {category: count}.
+func get_counts() -> Dictionary:
+	return _counts.duplicate()
+
+
+## Sets every counter back to 0 (a new mission starts with no data).
+func reset() -> void:
+	for category: String in CATEGORIES:
+		_counts[category] = 0
+		_refresh(category)
+
+
 func _refresh(category: String) -> void:
 	(_labels[category] as Label).text = "%s: %d" % [CATEGORIES[category], _counts[category]]
 

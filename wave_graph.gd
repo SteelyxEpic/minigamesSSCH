@@ -89,5 +89,5 @@ func _draw() -> void:
 
 	draw_rect(Rect2(Vector2.ZERO, size), axis_color, false, 2.0)
 	if not title.is_empty():
-		draw_string(ThemeDB.fallback_font, Vector2(10.0, 20.0), title,
+		draw_string(get_theme_default_font(), Vector2(10.0, 20.0), title,
 				HORIZONTAL_ALIGNMENT_LEFT, -1.0, 14, Color(1.0, 1.0, 1.0, 0.6))

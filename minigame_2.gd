@@ -106,6 +106,6 @@ func _solve() -> void:
 	_status_tween.tween_property(status, "scale", Vector2.ONE, 0.45) \
 			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
-	await get_tree().create_timer(next_round_delay).timeout
+	await get_tree().create_timer(next_round_delay, false).timeout
 	if is_inside_tree():
 		_new_round()

@@ -9,7 +9,6 @@
 script = ExtResource("1_svc")
 tray = NodePath("UI/ToolTray")
 window_layer = NodePath("UI/Windows")
-startup_minigame = "Rhythm"
 
 [node name="UI" type="CanvasLayer" parent="."]
 

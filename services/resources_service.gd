@@ -41,6 +41,16 @@ const WARNING_TEXT := {
 	"Water": "THIRSTY",
 }
 const WARNING_COLOR := Color("ff4a4a")
+## Plays over and over while any resource is low.
+const LOW_SOUND := preload("res://low.mp3")
+## Food comes in cans and water in bottles (each sprite is 24x24).
+const SUPPLY_ICONS := {
+	"Food": preload("res://can.png"),
+	"Water": preload("res://bottle.png"),
+}
+const EAT_SOUND := preload("res://eat.mp3")
+const DRINK_SOUND := preload("res://water.mp3")
+const FLASH_RED := Color(1.0, 0.3, 0.3)
 ## Resources that drain faster while a minigame is open.
 const FASTER_IN_MINIGAMES := ["Food", "Water"]
 
@@ -52,10 +62,14 @@ const FASTER_IN_MINIGAMES := ["Food", "Water"]
 @export var drain_enabled := true
 ## Percent lost per real second. 100 / rate = seconds until empty.
 @export_range(0.0, 5.0, 0.01, "or_greater") var oxygen_drain := 0.25
-@export_range(0.0, 5.0, 0.01, "or_greater") var food_drain := 0.15
-@export_range(0.0, 5.0, 0.01, "or_greater") var water_drain := 0.2
+@export_range(0.0, 5.0, 0.01, "or_greater") var food_drain := 0.35
+@export_range(0.0, 5.0, 0.01, "or_greater") var water_drain := 0.45
 ## Food and water drain this many times faster while a minigame is open (1 = no change).
 @export_range(1.0, 5.0, 0.05, "or_greater") var minigame_drain_multiplier := 1.75
+
+@export_group("Supplies")
+## Percent of food or water restored by using one pack.
+@export_range(1.0, 100.0, 1.0) var supply_restore := 25.0
 
 @export_group("Penalties")
 ## Oxygen (percent) lost each time a minigame is failed. 0 turns the penalty off.
@@ -67,6 +81,10 @@ const FASTER_IN_MINIGAMES := ["Food", "Water"]
 ## The warning only disappears once the level is this far above the threshold,
 ## so it doesn't flicker when the level hovers around it.
 @export_range(0.0, 20.0, 0.5) var warning_clear_margin := 5.0
+## While a resource is low, the screen edges and its icons flash red this many times per second.
+@export_range(0.1, 3.0, 0.05) var flash_speed := 0.4
+## How strong the red flash on the screen edges gets (0 turns it off).
+@export_range(0.0, 1.0, 0.05) var flash_strength := 0.6
 
 @export_group("Oxygen Vision")
 ## Blur begins below this oxygen level (percent) and reaches full strength at 0.
@@ -81,31 +99,96 @@ var _frames: Dictionary = {}  # resource name -> Array[AtlasTexture] (full, half
 var _warned: Dictionary = {}  # resource name -> bool
 var _warning_nodes: Dictionary = {}  # resource name -> Control
 var _minigame_active := false
+var _mission_running := false
+var _low_player: AudioStreamPlayer
+var _eat_player: AudioStreamPlayer
+var _drink_player: AudioStreamPlayer
 var _blur := 0.0
+var _flash_time := 0.0
+var _flash_level := 0.0  # 0 = no flashing, 1 = flashing at full strength
+var _rows: Dictionary = {}  # resource name -> HBoxContainer
+var _supply_counts: Dictionary = {}  # "Food"/"Water" -> packs left
+var _supply_buttons: Dictionary = {}  # "Food"/"Water" -> TextureButton
+var _supply_labels: Dictionary = {}  # "Food"/"Water" -> Label
 
+@onready var supplies: HBoxContainer = $UI/Supplies
+@onready var flash_rect: ColorRect = $Flash/Rect
 @onready var bars: HBoxContainer = $UI/Bars
-@onready var warnings: HBoxContainer = $UI/Warnings
+@onready var warnings: VBoxContainer = $UI/Warnings
 @onready var blur_rect: ColorRect = $Vision/Blur
 
 
 ## Called by MainSc after all services are loaded.
 func bind_nodes() -> void:
+	_low_player = AudioStreamPlayer.new()
+	_low_player.stream = LOW_SOUND
+	_low_player.finished.connect(_update_low_sound)  # starts it again for as long as a warning shows
+	add_child(_low_player)
+	_eat_player = AudioStreamPlayer.new()
+	_eat_player.stream = EAT_SOUND
+	add_child(_eat_player)
+	_drink_player = AudioStreamPlayer.new()
+	_drink_player.stream = DRINK_SOUND
+	add_child(_drink_player)
+
 	for resource_name: String in RESOURCES:
 		_add_row(resource_name, RESOURCES[resource_name])
 		_add_warning(resource_name)
 		set_level(resource_name, start_level)
+	for resource_name: String in SUPPLY_TINTS:
+		_add_supply(resource_name)
+	supplies.visible = false
 
 
 func _process(delta: float) -> void:
-	if drain_enabled:
+	if drain_enabled and _mission_running:
 		for resource_name: String in _levels:
 			var level: float = _levels[resource_name]
 			if level > 0.0:
 				set_level(resource_name, level - get_drain(resource_name) * delta)
 
 	_update_blur(delta)
+	_update_flash(delta)
+	_refresh_supplies()
 	# Gentle pulse so warnings catch the eye.
 	warnings.modulate.a = 0.75 + 0.25 * sin(Time.get_ticks_msec() / 1000.0 * 6.0)
+
+
+## Starts a mission: all three resources are full and begin to deplete. The player also gets
+## `extra_food` and `extra_water` packs they can use to top up.
+func start_mission(extra_food: int, extra_water: int) -> void:
+	for resource_name: String in RESOURCES:
+		set_level(resource_name, start_level)
+	_supply_counts = {"Food": extra_food, "Water": extra_water}
+	supplies.visible = true
+	_mission_running = true
+
+
+## Ends the mission: everything stops depleting and goes back to its starting level.
+func end_mission() -> void:
+	_mission_running = false
+	_supply_counts = {}
+	supplies.visible = false
+	for resource_name: String in RESOURCES:
+		set_level(resource_name, start_level)
+
+
+## Eats or drinks one pack, restoring `supply_restore` percent. Returns false if there is none
+## left or the resource is already full.
+func use_supply(resource_name: String) -> bool:
+	if int(_supply_counts.get(resource_name, 0)) <= 0 or get_level(resource_name) >= MAX_LEVEL:
+		return false
+	_supply_counts[resource_name] -= 1
+	add_level(resource_name, supply_restore)
+	var player := _eat_player if resource_name == "Food" else _drink_player
+	player.play()
+	_refresh_supplies()
+	return true
+
+
+## Packs left of "Food" or "Water".
+func get_supply(resource_name: String) -> int:
+	return int(_supply_counts.get(resource_name, 0))
 
 
 ## Tells the service whether a minigame is currently open.
@@ -195,6 +278,18 @@ func _set_warning(resource_name: String, active: bool) -> void:
 	else:
 		label.remove_theme_color_override("font_color")
 	warning_changed.emit(resource_name, active)
+	_update_low_sound()
+
+
+## The low sound repeats while at least one warning is showing, and stops when none is.
+func _update_low_sound() -> void:
+	if _low_player == null:
+		return
+	if _warned.values().has(true):
+		if not _low_player.playing:
+			_low_player.play()
+	else:
+		_low_player.stop()
 
 
 ## Eases the blur toward a target set by the oxygen level, so it fades in and out smoothly.
@@ -231,13 +326,14 @@ func _add_row(resource_name: String, sheet: Texture2D) -> void:
 		icons.append(icon)
 
 	var label := Label.new()
-	label.custom_minimum_size = Vector2(38.0, 0.0)
+	label.custom_minimum_size = Vector2(34.0, 0.0)
 	label.add_theme_font_size_override("font_size", 12)
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.mouse_filter = Control.MOUSE_FILTER_STOP
 	row.add_child(label)
 
 	bars.add_child(row)
+	_rows[resource_name] = row
 	_percent_labels[resource_name] = label
 	_icons[resource_name] = icons
 	_frames[resource_name] = frames
@@ -287,3 +383,66 @@ func _add_warning(resource_name: String) -> void:
 	warnings.add_child(box)
 	_warning_nodes[resource_name] = box
 	_warned[resource_name] = false
+
+
+## Slow red flashing while any resource is low: the screen edges and the low resource's icons.
+func _update_flash(delta: float) -> void:
+	var any_low := _warned.values().has(true)
+	_flash_time += delta
+	_flash_level = move_toward(_flash_level, 1.0 if any_low else 0.0, delta * 1.5)
+	var pulse := 0.5 + 0.5 * sin(_flash_time * TAU * flash_speed)
+
+	var intensity := _flash_level * pulse * flash_strength
+	flash_rect.visible = intensity > 0.002
+	if flash_rect.visible:
+		(flash_rect.material as ShaderMaterial).set_shader_parameter("intensity", intensity)
+
+	for resource_name: String in _rows:
+		var row := _rows[resource_name] as Control
+		if _warned.get(resource_name, false):
+			row.modulate = Color.WHITE.lerp(FLASH_RED, pulse)
+		else:
+			row.modulate = Color.WHITE
+
+
+## One clickable pack (the placeholder Godot icon) with a count, tinted per resource.
+func _add_supply(resource_name: String) -> void:
+	var holder := Control.new()
+	holder.custom_minimum_size = Vector2(52.0, 48.0)
+
+	var button := TextureButton.new()
+	button.texture_normal = SUPPLY_ICON
+	button.ignore_texture_size = true
+	button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	button.size = Vector2(48.0, 48.0)
+	button.self_modulate = SUPPLY_TINTS[resource_name]
+	button.pressed.connect(use_supply.bind(resource_name))
+	holder.add_child(button)
+
+	var count := Label.new()
+	count.position = Vector2(30.0, 26.0)
+	count.add_theme_font_size_override("font_size", 18)
+	count.add_theme_constant_override("outline_size", 5)
+	count.add_theme_color_override("font_outline_color", Color.BLACK)
+	count.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(count)
+
+	supplies.add_child(holder)
+	_supply_buttons[resource_name] = button
+	_supply_labels[resource_name] = count
+
+
+## Keeps each pack's count and enabled state up to date.
+func _refresh_supplies() -> void:
+	if not supplies.visible:
+		return
+	for resource_name: String in _supply_buttons:
+		var left := get_supply(resource_name)
+		var full := get_level(resource_name) >= MAX_LEVEL
+		var button := _supply_buttons[resource_name] as TextureButton
+		button.disabled = left <= 0 or full
+		button.modulate.a = 0.4 if button.disabled else 1.0
+		var action := "Eat" if resource_name == "Food" else "Drink"
+		button.tooltip_text = "%s a pack (+%d%%)\n%d left" % [action, int(supply_restore), left] if not full \
+				else "Already full"
+		(_supply_labels[resource_name] as Label).text = "x%d" % left

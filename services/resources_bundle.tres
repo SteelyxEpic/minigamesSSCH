@@ -1,10 +1,13 @@
-[gd_resource type="Resource" script_class="BundleDefinition" format=3]
+[gd_resource type="Resource" script_class="BundleDefinition" format=3 uid="uid://bgk4oer4dfkox"]
 
-[ext_resource type="Script" path="res://addons/afaz-services-system/core/bundle_definition.gd" id="1_bundle"]
-[ext_resource type="Script" path="res://addons/afaz-services-system/core/service_definition.gd" id="2_def"]
+[ext_resource type="Script" uid="uid://bd16kpbule7iy" path="res://addons/afaz-services-system/core/bundle_definition.gd" id="1_bundle"]
+[ext_resource type="Script" uid="uid://bgppd2o6krw5l" path="res://addons/afaz-services-system/core/service_definition.gd" id="2_def"]
 [ext_resource type="PackedScene" path="res://services/resources_service.tscn" id="3_scene"]
 [ext_resource type="PackedScene" path="res://services/clock_service.tscn" id="4_clock"]
 [ext_resource type="PackedScene" path="res://services/mission_data_service.tscn" id="5_data"]
+[ext_resource type="PackedScene" path="res://services/mooner_service.tscn" id="6_mooner"]
+[ext_resource type="PackedScene" path="res://services/pause_service.tscn" id="7_pause"]
+[ext_resource type="PackedScene" path="res://services/mission_service.tscn" id="8_mission"]
 
 [sub_resource type="Resource" id="Resource_service"]
 script = ExtResource("2_def")
@@ -27,8 +30,29 @@ description = "Running totals of the data collected by the minigames."
 scene = ExtResource("5_data")
 keywords = Array[String](["data", "mission"])
 
+[sub_resource type="Resource" id="Resource_mooner"]
+script = ExtResource("2_def")
+identity_name = "MoonerService"
+description = "Idle mooner mascot in the bottom right corner."
+scene = ExtResource("6_mooner")
+keywords = Array[String](["mooner", "mascot"])
+
+[sub_resource type="Resource" id="Resource_pause"]
+script = ExtResource("2_def")
+identity_name = "PauseService"
+description = "Pause button and pause screen."
+scene = ExtResource("7_pause")
+keywords = Array[String](["pause", "play", "menu"])
+
+[sub_resource type="Resource" id="Resource_mission"]
+script = ExtResource("2_def")
+identity_name = "MissionService"
+description = "Return button, mission report and funds."
+scene = ExtResource("8_mission")
+keywords = Array[String](["mission", "report", "funds", "return"])
+
 [resource]
 script = ExtResource("1_bundle")
 identity_name = "Resources"
 description = "Colony resource services."
-services = Array[ExtResource("2_def")]([SubResource("Resource_service"), SubResource("Resource_clock"), SubResource("Resource_data")])
+services = Array[ExtResource("2_def")]([SubResource("Resource_service"), SubResource("Resource_clock"), SubResource("Resource_data"), SubResource("Resource_mooner"), SubResource("Resource_pause"), SubResource("Resource_mission")])

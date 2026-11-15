@@ -9,6 +9,9 @@ enum Timing { PERFECT, EARLY, LATE }
 
 ## Kind of mission data a success produces (see MissionDataService).
 @export var data_category := "lidar"
+## Play a single round and then stop, instead of starting the next one. Mission Control sets
+## this, because it decides when the next minigame begins.
+@export var single_round := false
 
 const CLICK_SOUND := preload("uid://dqdspqodnnicj")
 const BEAT_SOUND := preload("uid://drj8n1qbll8ki")
@@ -62,6 +65,8 @@ var misses := 0
 var _waiting_for_click := false
 var _clicked_in_time := false
 var _timing := Timing.PERFECT
+var _pause_started := 0.0
+var _paused_total := 0.0
 var _beat_duration := 0.0
 var _round_start := 0.0  # seconds, from Time.get_ticks_msec()
 var _target_time := 0.0  # seconds after _round_start that the player should click
@@ -136,6 +141,8 @@ func _register_hit() -> void:
 func _run_beat_loop() -> void:
 	while is_inside_tree():
 		await _run_round()
+		if single_round:
+			return
 
 
 func _run_round() -> void:
@@ -179,7 +186,7 @@ func _run_round() -> void:
 		misses += 1
 		failed.emit()
 
-	await get_tree().create_timer(result_pause).timeout
+	await get_tree().create_timer(result_pause, false).timeout
 
 
 func _fade_beat(duration: float) -> void:
@@ -286,8 +293,18 @@ func _hide_timing_bar() -> void:
 	_bar_tween.tween_property(timing_bar, "modulate:a", 0.0, 0.25)
 
 
+## Game time in seconds. It stops while the game is paused, so a pause never counts as
+## an early or late click.
 func _now() -> float:
-	return Time.get_ticks_msec() / 1000.0
+	var real := _pause_started if get_tree().paused else Time.get_ticks_msec() / 1000.0
+	return real - _paused_total
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PAUSED:
+		_pause_started = Time.get_ticks_msec() / 1000.0
+	elif what == NOTIFICATION_UNPAUSED:
+		_paused_total += Time.get_ticks_msec() / 1000.0 - _pause_started
 
 
 func _play_sound(stream: AudioStream, pitch: float) -> void:
