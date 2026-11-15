@@ -39,6 +39,7 @@ func _ready() -> void:
 	for i in POOL_SIZE:
 		var player := AudioStreamPlayer.new()
 		player.stream = CLICK_SOUND
+		player.bus = AudioSettings.SFX
 		add_child(player)
 		_players.append(player)
 

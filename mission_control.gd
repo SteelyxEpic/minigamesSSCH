@@ -113,6 +113,7 @@ func _ready() -> void:
 
 	_click_player = AudioStreamPlayer.new()
 	_click_player.stream = BUTTON_SOUND
+	_click_player.bus = AudioSettings.SFX
 	add_child(_click_player)
 	_wire_button_sounds(self)  # every button built so far, including the instrument checkboxes
 

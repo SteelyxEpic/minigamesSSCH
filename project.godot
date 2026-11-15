@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="minigames"
-run/main_scene="res://main.tscn"
+run/main_scene="res://start_menu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 DialogueManager="*uid://c3rodes2l3gxb"
+AudioSettings="*res://audio_settings.gd"
 
 [display]
 

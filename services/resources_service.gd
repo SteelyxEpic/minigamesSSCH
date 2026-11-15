@@ -122,20 +122,23 @@ var _supply_labels: Dictionary = {}  # "Food"/"Water" -> Label
 func bind_nodes() -> void:
 	_low_player = AudioStreamPlayer.new()
 	_low_player.stream = LOW_SOUND
+	_low_player.bus = AudioSettings.SFX
 	_low_player.finished.connect(_update_low_sound)  # starts it again for as long as a warning shows
 	add_child(_low_player)
 	_eat_player = AudioStreamPlayer.new()
 	_eat_player.stream = EAT_SOUND
+	_eat_player.bus = AudioSettings.SFX
 	add_child(_eat_player)
 	_drink_player = AudioStreamPlayer.new()
 	_drink_player.stream = DRINK_SOUND
+	_drink_player.bus = AudioSettings.SFX
 	add_child(_drink_player)
 
 	for resource_name: String in RESOURCES:
 		_add_row(resource_name, RESOURCES[resource_name])
 		_add_warning(resource_name)
 		set_level(resource_name, start_level)
-	for resource_name: String in SUPPLY_TINTS:
+	for resource_name: String in SUPPLY_ICONS:
 		_add_supply(resource_name)
 	supplies.visible = false
 
@@ -405,17 +408,16 @@ func _update_flash(delta: float) -> void:
 			row.modulate = Color.WHITE
 
 
-## One clickable pack (the placeholder Godot icon) with a count, tinted per resource.
+## One clickable pack (a can of food or a bottle of water) with a count.
 func _add_supply(resource_name: String) -> void:
 	var holder := Control.new()
 	holder.custom_minimum_size = Vector2(52.0, 48.0)
 
 	var button := TextureButton.new()
-	button.texture_normal = SUPPLY_ICON
+	button.texture_normal = SUPPLY_ICONS[resource_name]
 	button.ignore_texture_size = true
 	button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	button.size = Vector2(48.0, 48.0)
-	button.self_modulate = SUPPLY_TINTS[resource_name]
 	button.pressed.connect(use_supply.bind(resource_name))
 	holder.add_child(button)
 

@@ -16,6 +16,8 @@ const MissionControlScript := preload("res://mission_control.gd")
 
 ## waste.json categories that are not instruments.
 const NOT_INSTRUMENTS := ["Spacecraft Electrical Generation Capacity"]
+## button.png: two 24x24 frames, not pressed then pressed.
+const BUTTON_SHEET := preload("res://button.png")
 const HEADER_COLOR := Color("ffd84a")
 const MUTED_COLOR := Color(1.0, 1.0, 1.0, 0.55)
 const OK_COLOR := Color("4aff7a")
@@ -70,7 +72,8 @@ var _cost_bar: HSlider
 var _cost_breakdown: Label
 var _dv_hint: Label
 var _info: Label
-var _launch_button: Button
+var _launch_button: TextureButton
+var _launch_frames: Array[AtlasTexture] = []
 var _checks: Array[CheckBox] = []
 
 
@@ -153,9 +156,27 @@ func _ready() -> void:
 	_info.add_theme_font_size_override("font_size", 12)
 	_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	footer.add_child(_info)
-	_launch_button = Button.new()
-	_launch_button.text = "LAUNCH"
-	_launch_button.custom_minimum_size = Vector2(140.0, 36.0)
+	var launch_label := Label.new()
+	launch_label.text = "LAUNCH"
+	launch_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	launch_label.add_theme_font_size_override("font_size", 20)
+	footer.add_child(launch_label)
+
+	# The launch button is a sprite sheet of two 24x24 frames: not pressed, then pressed.
+	for frame in 2:
+		var atlas := AtlasTexture.new()
+		atlas.atlas = BUTTON_SHEET
+		atlas.region = Rect2(frame * 24, 0, 24, 24)
+		_launch_frames.append(atlas)
+	_launch_button = TextureButton.new()
+	_launch_button.texture_normal = _launch_frames[0]
+	_launch_button.texture_hover = _launch_frames[0]
+	_launch_button.texture_pressed = _launch_frames[1]
+	_launch_button.texture_disabled = _launch_frames[0]  # shown dimmed while launching is blocked
+	_launch_button.ignore_texture_size = true
+	_launch_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	_launch_button.custom_minimum_size = Vector2(48.0, 48.0)
+	_launch_button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_launch_button.pressed.connect(_on_launch_pressed)
 	footer.add_child(_launch_button)
 
@@ -442,6 +463,7 @@ func _refresh() -> void:
 	elif over_funds:
 		problem = "Not enough funds: this mission costs %s more than you have." % MissionService.format_money(total_cost - _funds)
 	_launch_button.disabled = not problem.is_empty()
+	_launch_button.modulate.a = 0.45 if _launch_button.disabled else 1.0
 	if problem.is_empty():
 		_info.text = "Ready for launch. Anything left behind will be locked."
 		_info.add_theme_color_override("font_color", OK_COLOR)
@@ -463,7 +485,10 @@ func _set_readout(gauge: HSlider, text: String, bad: bool) -> void:
 func _on_launch_pressed() -> void:
 	if _launch_button.disabled:
 		return
-	_launch_button.disabled = true  # one launch only
+	# One launch only. The button stays down (pressed frame) while the launch sound plays.
+	_launch_button.texture_disabled = _launch_frames[1]
+	_launch_button.modulate.a = 1.0
+	_launch_button.disabled = true
 	var delta_v := _dv_slider.value
 	launch_requested.emit({
 		"power": _power_slider.value,

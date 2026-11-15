@@ -13,13 +13,22 @@ const LAUNCH_SOUND := preload("res://enter.mp3")
 const RETURN_SOUND := preload("res://leave.mp3")
 const DEATH_SOUND := preload("res://death.mp3")
 
+## Background music for the Mission Control area (the file main.mpeg converted to .wav).
+const MUSIC_PATH := "res://main.mpeg.wav"
+const MUSIC_VOLUME_DB := -8.0
+
 ## True while the launch or return sound is playing. Nothing else about the mission changes
 ## until the sound has finished.
 var _busy := false
+var _music: AudioStreamPlayer
+var _music_wanted := false
 
 
 func _ready() -> void:
 	super._ready()
+	# The music file is large, so start loading it now. It is ready by the time of the first launch.
+	if ResourceLoader.exists(MUSIC_PATH):
+		ResourceLoader.load_threaded_request(MUSIC_PATH)
 	_begin_planning()
 
 
@@ -64,6 +73,7 @@ func _on_minigameservice_tool_launch_requested(params: Dictionary) -> void:
 		minigames.set_mission_params(params)
 		minigames.set_available_tools([TOOL_CONTROL])
 		minigames.open_minigame(TOOL_CONTROL)
+	_start_music()
 	_busy = false
 
 
@@ -103,6 +113,7 @@ func _on_resourcesservice_depleted(resource_name: String) -> void:
 
 ## Shared by RETURN and death: close the tools and reset everything the mission used.
 func _end_mission(minigames: MinigameService, resources: ResourcesService, clock: ClockService, data: MissionDataService) -> void:
+	_stop_music()
 	if minigames:
 		minigames.set_available_tools([])
 		minigames.set_mission_params({})
@@ -147,10 +158,41 @@ func _on_minigameservice_minigame_solved(data_category: String) -> void:
 		data.record(data_category)
 
 
+## Starts the background music, which repeats until _stop_music().
+func _start_music() -> void:
+	if _music == null:
+		var stream := load(MUSIC_PATH) as AudioStream
+		if stream == null:
+			push_warning("Could not load the background music: %s" % MUSIC_PATH)
+			return
+		_music = AudioStreamPlayer.new()
+		_music.stream = stream
+		_music.bus = AudioSettings.MUSIC
+		_music.volume_db = MUSIC_VOLUME_DB
+		_music.finished.connect(_on_music_finished)
+		add_child(_music)
+	_music_wanted = true
+	if not _music.playing:
+		_music.play()
+
+
+func _stop_music() -> void:
+	_music_wanted = false
+	if _music:
+		_music.stop()
+
+
+## Plays the track again as long as the player is still in the Mission Control area.
+func _on_music_finished() -> void:
+	if _music_wanted:
+		_music.play()
+
+
 ## Plays a sound once and finishes when it has played all the way through.
 func _play_sound(stream: AudioStream) -> void:
 	var player := AudioStreamPlayer.new()
 	player.stream = stream
+	player.bus = AudioSettings.SFX
 	add_child(player)
 	player.play()
 	await player.finished
