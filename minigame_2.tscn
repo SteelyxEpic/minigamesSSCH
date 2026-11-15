@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://wave_graph.gd" id="3_graph"]
 
 [node name="minigame2" type="Control" unique_id=481825475]
-custom_minimum_size = Vector2(980, 510)
+custom_minimum_size = Vector2(940, 510)
 clip_contents = true
 script = ExtResource("1_mg2")
 
@@ -29,7 +29,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_left = 209.0
 offset_top = 15.0
-offset_right = 961.0
+offset_right = 955.0
 offset_bottom = 175.0
 mouse_filter = 2
 script = ExtResource("3_graph")
@@ -40,7 +40,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_left = 209.0
 offset_top = 185.0
-offset_right = 961.0
+offset_right = 955.0
 offset_bottom = 345.0
 mouse_filter = 2
 script = ExtResource("3_graph")
@@ -49,7 +49,7 @@ title = "YOURS"
 [node name="Status" type="RichTextLabel" parent="Stage"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 19.0
+offset_left = 24.0
 offset_top = 95.0
 offset_right = 199.0
 offset_bottom = 275.0

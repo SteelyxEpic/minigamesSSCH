@@ -10,6 +10,8 @@ class Speck:
 	var stuck := false
 	var offset := Vector2.ZERO  # position on the plate once stuck, as a fraction of its size
 
+## Kind of mission data a success produces (see MissionDataService).
+@export var data_category := "dust"
 @export var dust_goal := 10
 @export var belt_speed := 140.0
 ## Seconds the plate takes to fully extend.

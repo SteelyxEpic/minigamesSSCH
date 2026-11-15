@@ -8,7 +8,7 @@ atlas = ExtResource("2_k7ghj")
 region = Rect2(0, 0, 24, 24)
 
 [node name="minigame1" type="Control" unique_id=531843035]
-custom_minimum_size = Vector2(980, 540)
+custom_minimum_size = Vector2(940, 500)
 clip_contents = true
 layout_mode = 3
 anchors_preset = 0

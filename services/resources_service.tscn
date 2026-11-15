@@ -1,18 +1,56 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://services/resources_service.gd" id="1_res"]
+[ext_resource type="Shader" path="res://shaders/oxygen_blur.gdshader" id="2_blur"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_blur"]
+shader = ExtResource("2_blur")
+shader_parameter/blur = 0.0
+shader_parameter/max_radius = 2.5
+shader_parameter/max_lod = 1.2
+shader_parameter/vignette_strength = 0.5
 
 [node name="ResourcesService" type="Node"]
 script = ExtResource("1_res")
 
+[node name="Vision" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="Blur" type="ColorRect" parent="Vision"]
+visible = false
+material = SubResource("ShaderMaterial_blur")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="UI" type="CanvasLayer" parent="."]
+layer = 10
 
 [node name="Bars" type="HBoxContainer" parent="UI"]
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 210.0
-offset_top = 4.0
-offset_right = -12.0
-offset_bottom = 30.0
+offset_left = 220.0
+offset_top = 12.0
+offset_right = -24.0
+offset_bottom = 36.0
 grow_horizontal = 2
-theme_override_constants/separation = 24
+theme_override_constants/separation = 16
+
+[node name="Warnings" type="HBoxContainer" parent="UI"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -560.0
+offset_top = -36.0
+offset_right = -12.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 18
+alignment = 2

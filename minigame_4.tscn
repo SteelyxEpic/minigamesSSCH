@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://minigame_4.gd" id="1_mg4"]
 
 [node name="minigame4" type="Control"]
-custom_minimum_size = Vector2(980, 400)
+custom_minimum_size = Vector2(940, 400)
 clip_contents = true
 script = ExtResource("1_mg4")
 

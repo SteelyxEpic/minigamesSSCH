@@ -1,9 +1,14 @@
 extends Control
 
-signal beat_hit(timing: Timing)
-signal beat_missed(total_misses: int)
+## The player hit the beat (perfect, early or late all count).
+signal solved
+## The player missed the beat.
+signal failed
 
 enum Timing { PERFECT, EARLY, LATE }
+
+## Kind of mission data a success produces (see MissionDataService).
+@export var data_category := "lidar"
 
 const CLICK_SOUND := preload("uid://dqdspqodnnicj")
 const BEAT_SOUND := preload("uid://drj8n1qbll8ki")
@@ -167,12 +172,12 @@ func _run_round() -> void:
 	_hide_timing_bar()
 
 	if _clicked_in_time:
-		beat_hit.emit(_timing)  # sound and feedback already handled on click
+		solved.emit()  # sound and feedback already handled on click
 	else:
 		_play_sound(BEAT_SOUND, miss_pitch)
 		_show_feedback(MISS_TEXT)
 		misses += 1
-		beat_missed.emit(misses)
+		failed.emit()
 
 	await get_tree().create_timer(result_pause).timeout
 

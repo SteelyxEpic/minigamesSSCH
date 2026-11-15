@@ -3,6 +3,9 @@ extends Control
 
 signal solved
 
+## Kind of mission data a success produces (see MissionDataService).
+@export var data_category := "minerals"
+
 ## Highest per-line RMS error that still counts as matching.
 @export var tolerance := 0.15
 ## Seconds all three lines must stay matched before the round is solved.

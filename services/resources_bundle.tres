@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://addons/afaz-services-system/core/service_definition.gd" id="2_def"]
 [ext_resource type="PackedScene" path="res://services/resources_service.tscn" id="3_scene"]
 [ext_resource type="PackedScene" path="res://services/clock_service.tscn" id="4_clock"]
+[ext_resource type="PackedScene" path="res://services/mission_data_service.tscn" id="5_data"]
 
 [sub_resource type="Resource" id="Resource_service"]
 script = ExtResource("2_def")
@@ -19,8 +20,15 @@ description = "In-game clock. 1 hour = 2 real minutes."
 scene = ExtResource("4_clock")
 keywords = Array[String](["clock", "time"])
 
+[sub_resource type="Resource" id="Resource_data"]
+script = ExtResource("2_def")
+identity_name = "MissionDataService"
+description = "Running totals of the data collected by the minigames."
+scene = ExtResource("5_data")
+keywords = Array[String](["data", "mission"])
+
 [resource]
 script = ExtResource("1_bundle")
 identity_name = "Resources"
 description = "Colony resource services."
-services = Array[ExtResource("2_def")]([SubResource("Resource_service"), SubResource("Resource_clock")])
+services = Array[ExtResource("2_def")]([SubResource("Resource_service"), SubResource("Resource_clock"), SubResource("Resource_data")])

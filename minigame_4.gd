@@ -3,12 +3,16 @@ extends Control
 ## and press STOP where you think the radiation is highest.
 
 signal solved
+## STOP was pressed away from the hot spot.
+signal failed
 
 const CLICK_SOUND := preload("res://click.mp3")
 const POOL_SIZE := 6
 const PEAK_SAMPLES := 200
 const BACKGROUND_RADIATION := 0.04
 
+## Kind of mission data a success produces (see MissionDataService).
+@export var data_category := "radiation"
 ## Clicks per second at the strongest spot.
 @export var max_rate := 25.0
 ## Fraction of the peak reading that counts as having found the hot spot.
@@ -115,6 +119,8 @@ func _on_stop_pressed() -> void:
 
 	if success:
 		solved.emit()
+	else:
+		failed.emit()
 	await get_tree().create_timer(result_delay).timeout
 	if not is_inside_tree():
 		return

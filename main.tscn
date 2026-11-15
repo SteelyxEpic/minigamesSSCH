@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://addons/afaz-services-system/core/main_sc.gd" id="1_main"]
+[ext_resource type="Script" path="res://main.gd" id="1_main"]
 [ext_resource type="Script" path="res://addons/afaz-services-system/core/bundle_definition.gd" id="2_bd"]
 [ext_resource type="Resource" path="res://services/minigames_bundle.tres" id="3_bundle"]
 [ext_resource type="Resource" path="res://services/resources_bundle.tres" id="4_resources"]
