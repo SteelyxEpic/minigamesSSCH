@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bd16kpbule7iy" path="res://addons/afaz-services-system/core/bundle_definition.gd" id="2_bd"]
 [ext_resource type="Resource" uid="uid://bfnon48s4m0lk" path="res://services/minigames_bundle.tres" id="3_bundle"]
 [ext_resource type="Resource" path="res://services/resources_bundle.tres" id="4_resources"]
+[ext_resource type="Texture2D" path="res://title scree.jpeg" id="5_background"]
 
 [node name="Main" type="Node" unique_id=1337857959 node_paths=PackedStringArray("services_node")]
 script = ExtResource("1_main")
@@ -11,3 +12,26 @@ bundles = Array[ExtResource("2_bd")]([ExtResource("3_bundle"), ExtResource("4_re
 services_node = NodePath("Services")
 
 [node name="Services" type="Node" parent="." unique_id=353824446]
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="Picture" type="TextureRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Shade" type="ColorRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.25)
